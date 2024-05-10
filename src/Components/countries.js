@@ -5,45 +5,46 @@ function Countries() {
 
     const API_BASE_URL = 'https://restcountries.com/v3.1/all';
     const [countries, setCountries] = useState([]);
-    const flag = countries.slice(0,10);
 
-    const randomFlags = [];
+    useEffect(() => {
+      console.log('response')
+         fetch(API_BASE_URL).then((res) => {console.log('res',res)})
+        //const countriesJson = await response.json()
+        // console.log(countriesJson);
+        // setCountries(countriesJson);
+      
+    }, []);
+    console.log('countries',countries);
+  
+    const answers = [];
     const flagCount = countries.length;
 
+    console.log('flagcount',flagCount);
     for (let i = 0; i < 15; i++) {
         const randomIndex = Math.floor(Math.random() * flagCount);
         const randomFlag = countries[randomIndex];
-        randomFlags.push(randomFlag);
+        answers.push(randomFlag);
     }
-
-    console.log(randomFlags.length);
+    //console.log(answers);
     
-    
-
-    useEffect(() => {
-      const fetchCountryData = async() => {
-        const response = await fetch(API_BASE_URL)
-        const countries = await response.json()
-        setCountries(countries)
-        //console.log(countries);
-      }
-      fetchCountryData()
-    }, []);
-
-    
-  
+    function setDifference(countries, answers) {
+      return countries.filter(item => !answers.includes(item));
+    }
+    const difference = setDifference(countries, answers);
+    console.log(difference);
 
   return (
-    <>
-      {flag.map((country, index) => (
+    
+    <div>
+      {answers.map((country, index) => (
 
-        <div key={index}>
-          <button handleSubmit>{}</button>
-          <img src={country.flags.png} alt={country.flags.alt}/>
-          <h3>{country.name.common}</h3>
-        </div>
+      <div className='container' key={index}>
+        <button className='left'>{country.name.common}</button>
+        <img className='center' src={country.flags.png} alt={country.flags.alt}/>
+        <button className='right'>{country.name.common}</button>
+      </div>
       ))}
-    </>
+    </div>
   )
 }
 
