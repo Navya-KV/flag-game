@@ -3,10 +3,21 @@ import React, { useEffect, useState } from 'react'
 
 const API_BASE_URL = 'https://restcountries.com/v3.1/all';
 
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  while(currentIndex !== 0){
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex],array[currentIndex]];
+  }
+}
+
 function Countries() {
     
     const [countries, setCountries] = useState([]);
     const [randomCountries,setRandomCountries] = useState([]);
+    const [randomAnswerFlags, setRandomAnswerFlags] = useState([]);
 
     useEffect(() => {
       console.log("effect1");
@@ -21,6 +32,8 @@ function Countries() {
       fetchData();
     }, []);
 
+
+
     useEffect(() => {
       console.log("effect2");
       let randomFlags = [];
@@ -34,27 +47,39 @@ function Countries() {
           randomFlags.push(randomFlag);
       }
       setRandomCountries(randomFlags);
+
     }
     }, [countries]);
 
-    const difference = countries.reduce((result, element) => {
-      if (randomCountries.indexOf(element) === -1) {
-          result.push(element);
-      }
-      return result;
-    }, []);
+
+     useEffect(() => {
+      if(randomCountries){
+        const difference = countries.reduce((result, element) => {
+          if (randomCountries.indexOf(element) === -1) {
+              result.push(element);
+          }
+          return result;
+        }, []);
    
-  console.log('Different',difference);
-  
+        const randomAnswers = [];
+        for(let i=0;i<randomCountries.length;i++){
+          let item = [randomCountries[i],difference[Math.floor(Math.random() * difference.length)]];
+          shuffle(item);
+          item.push(randomCountries[i]);
+          randomAnswers.push(item);
+        }
+        setRandomAnswerFlags(randomAnswers);
+      }
+     }, [randomCountries])
 
   return (
     <>
-      {randomCountries.map((country, index) => (
+      {randomAnswerFlags.map((option, index) => (
     
         <div className='container' key={index}>
-          <button className='left'>{country.name.common}</button>
-          <img className='center' src={country.flags.png} alt={country.flags.alt}/>
-          <button className='right'>{country.name.common}</button>
+          <button className='left'>{option[0].name.common}</button>
+          <img className='center' src={option[2].flags.png} alt={option[2].flags.alt}/>
+          <button className='right'>{option[1].name.common}</button>
         </div>
       ))}
     </>
@@ -62,62 +87,3 @@ function Countries() {
 }
 
 export default Countries;
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from 'react'
-// //import axios from 'axios';
-
-// function Countries() {
-
-//     const API_BASE_URL = 'https://restcountries.com/v3.1/all';
-//     const [countries, setCountries] = useState([]);
-
-//     useEffect(() => {
-//       console.log('response')
-//          fetch(API_BASE_URL).then((res) => {console.log('res',res)})
-//         //const countriesJson = await response.json()
-//         // console.log(countriesJson);
-//         // setCountries(countriesJson);
-      
-//     }, []);
-//     console.log('countries',countries);
-  
-//     const answers = [];
-//     const flagCount = countries.length;
-
-//     console.log('flagcount',flagCount);
-//     for (let i = 0; i < 15; i++) {
-//         const randomIndex = Math.floor(Math.random() * flagCount);
-//         const randomFlag = countries[randomIndex];
-//         answers.push(randomFlag);
-//     }
-//     //console.log(answers);
-    
-//     function setDifference(countries, answers) {
-//       return countries.filter(item => !answers.includes(item));
-//     }
-//     const difference = setDifference(countries, answers);
-//     console.log(difference);
-
-//   return (
-    
-//     <div>
-//       {answers.map((country, index) => (
-
-//       <div className='container' key={index}>
-//         <button className='left'>{country.name.common}</button>
-//         <img className='center' src={country.flags.png} alt={country.flags.alt}/>
-//         <button className='right'>{country.name.common}</button>
-//       </div>
-//       ))}
-//     </div>
-//   )
-// }
-
-// export default Countries;
