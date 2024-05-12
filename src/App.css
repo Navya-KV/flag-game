@@ -1,10 +1,21 @@
-body{
+  body{
+    background-color: rgb(18, 103, 113);
+  }
+  .container {
     background-color: #121212;
-}
-.container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  nav{
+    text-align: center;
+  }
+  h1{
+    text-align: center;
+    color: #062d34;
+  }
+  h2{
+    text-align: center;
   }
   
   .left {

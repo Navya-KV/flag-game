@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-//import axios from 'axios';
 
 const API_BASE_URL = 'https://restcountries.com/v3.1/all';
+
+
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -18,6 +19,9 @@ function Countries() {
     const [countries, setCountries] = useState([]);
     const [randomCountries,setRandomCountries] = useState([]);
     const [randomAnswerFlags, setRandomAnswerFlags] = useState([]);
+    const [score, setScore] = useState(0);
+    const [life, setLife] = useState(5);
+    
 
     useEffect(() => {
       console.log("effect1");
@@ -39,7 +43,6 @@ function Countries() {
       let randomFlags = [];
       if(countries.length > 0 ){
       const flagCount = countries.length;
-      // console.log('flagcount',flagCount);
       
       for (let i = 0; i < 15; i++) {
           const randomIndex = Math.floor(Math.random() * flagCount);
@@ -47,7 +50,6 @@ function Countries() {
           randomFlags.push(randomFlag);
       }
       setRandomCountries(randomFlags);
-
     }
     }, [countries]);
 
@@ -70,18 +72,52 @@ function Countries() {
         }
         setRandomAnswerFlags(randomAnswers);
       }
-     }, [randomCountries])
+      }, [countries,randomCountries])
+
+     
+      const handleClickButtonLeft = (option) => {
+
+          if(option[0].name.common === option[2].name.common){
+            setScore(score+1);
+            alert('correct'); 
+          }
+          else{
+            setLife(life-1);
+            alert('wrong');
+          }
+        }
+
+      const handleClickButtonRight = (option) => {
+          if(option[1].name.common === option[2].name.common){
+            setScore(score+1);
+            alert('correct');
+          }
+          else{
+            alert('wrong');
+            setLife(life-1);
+          }
+      }
+
+     
 
   return (
     <>
+    <header><h1>FLAG GAME</h1></header>
+    <nav><h2 className='score'>Score: {score}</h2><h2 className='life'>Life: {life}</h2></nav>
+    {score !== 15 ?
+      <section>
+      {life !== 0 ?
+      <div className='containerBody'>
       {randomAnswerFlags.map((option, index) => (
-    
+        
         <div className='container' key={index}>
-          <button className='left'>{option[0].name.common}</button>
+          <button className='left' onClick={() => handleClickButtonLeft(option)}>{option[0].name.common}</button>
           <img className='center' src={option[2].flags.png} alt={option[2].flags.alt}/>
-          <button className='right'>{option[1].name.common}</button>
+          <button className='right' onClick={() => handleClickButtonRight(option)}>{option[1].name.common}</button>
         </div>
       ))}
+      </div>: <h1>Game Over!!!</h1>}
+      </section>: <h1>You Win!!!</h1>}
     </>
   )
 }
