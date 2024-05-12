@@ -17,10 +17,12 @@ function shuffle(array) {
 function Countries() {
     
     const [countries, setCountries] = useState([]);
-    const [randomCountries,setRandomCountries] = useState([]);
+    const [randomCountries, setRandomCountries] = useState([]);
     const [randomAnswerFlags, setRandomAnswerFlags] = useState([]);
+    const [disabledButtons, setDisabledButtons] = useState([]);
     const [score, setScore] = useState(0);
     const [life, setLife] = useState(5);
+    
     
 
     useEffect(() => {
@@ -75,9 +77,10 @@ function Countries() {
       }, [countries,randomCountries])
 
      
-      const handleClickButtonLeft = (option) => {
+      
+      const handleClick = (option,optIndex,index) => {
 
-          if(option[0].name.common === option[2].name.common){
+          if(option[optIndex].name.common === option[2].name.common){
             setScore(score+1);
             alert('correct'); 
           }
@@ -85,20 +88,14 @@ function Countries() {
             setLife(life-1);
             alert('wrong');
           }
+          console.log('indices:',index);
+          setDisabledButtons(disabledButtons => [...disabledButtons,index]);
+          
         }
 
-      const handleClickButtonRight = (option) => {
-          if(option[1].name.common === option[2].name.common){
-            setScore(score+1);
-            alert('correct');
-          }
-          else{
-            alert('wrong');
-            setLife(life-1);
-          }
-      }
+     console.log('disabledButtons:', disabledButtons.length);
+     console.log('randomAnswerFlags:',randomAnswerFlags.length);
 
-     
 
   return (
     <>
@@ -106,14 +103,13 @@ function Countries() {
     <nav><h2 className='score'>Score: {score}</h2><h2 className='life'>Life: {life}</h2></nav>
     {score !== 15 ?
       <section>
-      {life !== 0 ?
+      {disabledButtons.length !== 15 && (life !== 0) ?
       <div className='containerBody'>
       {randomAnswerFlags.map((option, index) => (
-        
         <div className='container' key={index}>
-          <button className='left' onClick={() => handleClickButtonLeft(option)}>{option[0].name.common}</button>
+          <button className='left' onClick={() => handleClick(option,0,index)} disabled={disabledButtons.includes(index)}>{option[0].name.common}</button>
           <img className='center' src={option[2].flags.png} alt={option[2].flags.alt}/>
-          <button className='right' onClick={() => handleClickButtonRight(option)}>{option[1].name.common}</button>
+          <button className='right' onClick={() =>handleClick(option,1,index)} disabled={disabledButtons.includes(index)}>{option[1].name.common}</button>
         </div>
       ))}
       </div>: <h1>Game Over!!!</h1>}

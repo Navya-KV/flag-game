@@ -53,4 +53,8 @@
     border-color: #b482f1;
   }
   
+  button[disabled]{
+    background-color: #8b8989;
+    border: #4b4a4a;
+  }
   
